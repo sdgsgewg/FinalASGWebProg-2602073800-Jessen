@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
 use App\Models\Following;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -17,7 +18,9 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $followings = Following::where('follower_id', $user->id)->get();
+        $followings = Following::where('follower_id', $user->id)
+        ->orWhere('followed_id', $user->id)
+        ->get();
 
         return view('users.profile', [
             'user' => $user,
@@ -86,15 +89,34 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $loggedInUser = Auth::user();
         $user = User::where('id', $user->id)->first();
 
         $inWishlist = $this->checkWishlist($user);
         $isFollowing = $this->checkFollowing($user);
+        $chat = null;
+
+        if ($isFollowing) {
+            $chat1 = Chat::where('user_1_id', $user->id)
+            ->where('user_2_id', $loggedInUser->id)
+            ->first();
+
+            $chat2 = Chat::where('user_1_id', $loggedInUser->id)
+            ->where('user_2_id', $user->id)
+            ->first();
+
+            if ($chat1) {
+                $chat = $chat1;
+            } else {
+                $chat = $chat2;
+            }
+        }
 
         return view('users.show', [
             'user' => $user,
             'inWishlist' => $inWishlist,
             'isFollowing' => $isFollowing,
+            'chat' => $chat,
         ]);
     }
 

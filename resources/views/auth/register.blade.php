@@ -133,7 +133,6 @@
                                 </div>
                             </div>
 
-
                             {{-- Instagram username --}}
                             <div class="row mb-3">
                                 <label for="instagram_username"

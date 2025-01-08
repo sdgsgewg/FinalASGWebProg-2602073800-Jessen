@@ -1,14 +1,13 @@
 @extends('layouts.app')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/chat/style.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ secure_asset('css/chat/style.css') }}?v={{ time() }}">
 @endsection
 
 @section('content')
     <div class="row justify-content-center mt-5">
         <div class="col-11 col-lg-8">
             <div class="chat-box">
-                {{-- Chat Header: Recipient Related Information --}}
                 <div class="d-flex flex-row align-items-center mb-3">
                     <div class="col-1">
                         <a href="{{ route('chats.index') }}" class="color-inherit">
@@ -42,7 +41,6 @@
                     @endforelse
                 </div>
 
-                {{-- To store the chat message --}}
                 <form id="chat-form" method="POST" action="{{ route('chats.store') }}" class="chat-form">
                     @csrf
                     <input type="hidden" name="chat" id="chat" value="{{ $chat->id }}">
@@ -55,4 +53,14 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        window.chatId = {{ $chat->id }};
+        window.userId = {{ auth()->user()->id }};
+        window.PUSHER_APP_KEY = "{{ config('broadcasting.connections.pusher.key') }}";
+        window.PUSHER_APP_CLUSTER = "{{ config('broadcasting.connections.pusher.options.cluster') }}";
+    </script>
+    <script src="{{ secure_asset('js/chat.js') }}"></script>
 @endsection

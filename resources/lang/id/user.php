@@ -36,6 +36,11 @@ return [
     'insta_username' => 'Nama Pengguna Instagram:',
     'mobile_number' => 'Nomor Telepon:',
     'pref_loc' => 'Lokasi Pertemuan yang Diinginkan:',
+    'location' => [
+        'Cafe' => 'Kafe',
+        'Shopping Mall' => 'Mal',
+        'Park' => 'Taman'
+    ],
     'dislike' => 'Tidak Suka',
     'like' => 'Suka',
     'friend_list' => 'Daftar Pertemanan',

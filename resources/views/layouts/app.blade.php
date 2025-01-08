@@ -10,6 +10,8 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -23,10 +25,10 @@
     {{-- JQuery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-        window.PUSHER_APP_KEY = "{{ config('broadcasting.connections.pusher.key') }}";
-        window.PUSHER_APP_CLUSTER = "{{ config('broadcasting.connections.pusher.options.cluster') }}";
-    </script>
+    {{-- Pusher --}}
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    {{-- Laravel Echo --}}
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.13.0/dist/echo.iife.js"></script>
 </head>
 
 <body>
@@ -34,7 +36,7 @@
     <div id="app">
         @include('partials.navbar')
         @yield('css')
-        <main class="py-4">
+        <main class="content py-4">
             @yield('content')
         </main>
         @yield('scripts')

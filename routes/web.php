@@ -25,8 +25,7 @@ Route::get('/change-language/{lang}', function ($lang) {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/filter', [HomeController::class, 'filterByGender'])->name('filter');
-Route::get('/search', [HomeController::class, 'searchByHobby'])->name('search');
+Route::get('/filter-users', [HomeController::class, 'filterUsers'])->name('filter-users');
 
 // ROUTE FOR LOGIN / REGISTER
 Auth::routes();

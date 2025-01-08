@@ -53,6 +53,42 @@ class ChatController extends Controller
      * Store a newly created resource in storage.
      */
     // Store message in a chat
+    // public function store(Request $request)
+    // {
+    //     $chat = Chat::findOrFail($request->chat);
+    
+    //     $request->validate([
+    //         'message' => 'required|string|max:255',
+    //     ]);
+    
+    //     $message = ChatMessage::create([
+    //         'chat_id' => $chat->id,
+    //         'sender_id' => Auth::user()->id,
+    //         'message_text' => $request->message,
+    //     ]);
+    //     $message->save();
+    
+    //     // Dapatkan ID penerima (user lain dalam chat)
+    //     $recipientId = $chat->user_1_id === Auth::user()->id ? $chat->user_2_id : $chat->user_1_id;
+    
+    //     // Buat notifikasi untuk penerima
+    //     Notification::create([
+    //         'user_id' => $recipientId, // Penerima notifikasi
+    //         'type' => 'chat_message_sent',
+    //         'title' => 'Pesan Baru',
+    //         'message' => Auth::user()->name . ' mengirimkan pesan baru kepada Anda.',
+    //         'related_id' => $chat->id, // ID chat terkait
+    //         'related_type' => 'App\Models\Chat', // Model terkait
+    //         'priority' => 'medium',
+    //     ]);
+    
+    //     // Siarkan Event
+    //     broadcast(new MessageSent($message))->toOthers();
+    
+    //     // Kembalikan ke halaman chat setelah pesan terkirim
+    //     return redirect()->route('chats.show', ['chat' => $chat->id]);
+    // }
+    
     public function store(Request $request)
     {
         $chat = Chat::findOrFail($request->chat);
@@ -66,11 +102,10 @@ class ChatController extends Controller
             'sender_id' => Auth::user()->id,
             'message_text' => $request->message,
         ]);
-        $message->save();
 
         // Dapatkan ID penerima (user lain dalam chat)
         $recipientId = $chat->user_1_id === Auth::user()->id ? $chat->user_2_id : $chat->user_1_id;
-
+    
         // Buat notifikasi untuk penerima
         Notification::create([
             'user_id' => $recipientId, // Penerima notifikasi
@@ -81,13 +116,15 @@ class ChatController extends Controller
             'related_type' => 'App\Models\Chat', // Model terkait
             'priority' => 'medium',
         ]);
-
-        return redirect()->back();
-
-        // Menyiarkan pesan yang baru
-        // broadcast(new MessageSent($message))->toOthers();
-
-        // return response()->json(['status' => 'Message sent successfully!']);
+    
+        // Siarkan event untuk real-time update
+        broadcast(new MessageSent($message))->toOthers();
+    
+        // Pastikan respon berupa JSON
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
     }
 
     // Show chat conversation between two users

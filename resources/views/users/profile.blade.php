@@ -72,10 +72,6 @@
                     @if (auth()->user()->id !== $user->id)
                         <div
                             class="card-footer d-flex justify-content-center align-items-center text-center gap-3 bg-light">
-                            <button class="btn btn-danger btn-sm d-iniline-flex">
-                                <i class="bi bi-hand-thumbs-down me-1"></i>
-                                {{ __('user.dislike') }}
-                            </button>
                             <button class="btn btn-primary btn-sm d-iniline-flex">
                                 <i class="bi bi-hand-thumbs-up me-1"></i>
                                 {{ __('user.like') }}
@@ -100,7 +96,10 @@
                         @foreach ($followings as $following)
                             <div class="col-12 col-md-6 mb-4">
                                 @include('components.users.friend-card', [
-                                    'user' => $following->followed,
+                                    'user' =>
+                                        $following->followed->id === $user->id
+                                            ? $following->follower
+                                            : $following->followed,
                                 ])
                             </div>
                         @endforeach

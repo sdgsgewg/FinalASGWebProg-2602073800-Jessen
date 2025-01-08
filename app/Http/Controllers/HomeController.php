@@ -62,7 +62,7 @@ class HomeController extends Controller
     public function index()
     {
         // Fetch All Users
-        $users = User::paginate(2);
+        $users = User::paginate(4);
 
         $users->getCollection()->transform(function ($user) {
             $hobbies = json_decode($user->hobbies, true); // Ambil data hobi
@@ -87,77 +87,72 @@ class HomeController extends Controller
         ]);
     }
 
-    public function filterByGender(Request $request)
+    public function filterUsers(Request $request)
     {
+        // Validasi input
         $request->validate([
             'gender' => 'nullable|string',
+            'search' => 'nullable|string',
         ]);
-
-        $gender = strtolower(request('gender'));
-
-        $users = User::where('gender', $gender)->paginate(2);
-
-        $users->getCollection()->transform(function ($user) {
-            $hobbies = json_decode($user->hobbies, true); // Ambil data hobi
-            $randomHobby = $hobbies[array_rand($hobbies)] ?? 'nature'; // Pilih hobi acak
-
+    
+        // Mulai query builder
+        $query = User::query();
+    
+        $gender = null;
+        // Filter berdasarkan gender jika ada
+        if ($request->has('gender') && !empty($request->gender)) {
+            $gender = strtolower($request->gender);
+            $query->where('gender', $gender); // Apply gender filter
+        }
+    
+        $hobby = null;
+        // Filter berdasarkan hobi jika ada
+        if ($request->has('search') && !empty($request->search)) {
+            $hobby = strtolower($request->search);
+            $query->whereRaw('LOWER(hobbies) LIKE ?', ['%' . $hobby . '%']); // Apply hobby filter
+        }
+    
+        // Ambil hasil query dengan paginasi
+        $users = $query->paginate(4);
+    
+        // Proses data untuk menambahkan informasi hobi acak dan gambar terkait
+        $users->getCollection()->transform(function ($user) use ($hobby) {
+            $hobbies = json_decode($user->hobbies, true);
+            $randomHobby = '';
+    
+            if (isset($hobby)) {
+                // Jika ada hobi yang dicari, cari hobi yang cocok
+                $userHobby = '';
+                foreach ($hobbies as $h) {
+                    if (strtolower($h) === $hobby) {
+                        $userHobby = $h;
+                        break;
+                    }
+                }
+    
+                // Jika hobi ditemukan, set hobi acak dengan hobi yang ditemukan
+                if ($userHobby) {
+                    $randomHobby = $userHobby;
+                }
+            }
+    
+            if (!$randomHobby) {
+                // Pilih hobi acak jika tidak ditemukan kecocokan
+                $randomHobby = $hobbies[array_rand($hobbies)] ?? 'nature';
+            }
+    
             $user->randomHobby = $randomHobby;
-
+    
             // Ambil gambar berdasarkan hobi
             $user->randomImage = $this->pexelsService->getRandomImage($randomHobby);
+    
             return $user;
         });
-
+    
+        // Return the view with filtered users
         return view('filtered-users', [
             'users' => $users
         ]);
     }
 
-    public function searchByHobby(Request $request)
-    {
-        $request->validate([
-            'search' => 'required|string',
-        ]);
-
-        $hobby = strtolower(request('search'));
-        
-        // Fetch all users where the 'hobbies' JSON column contains the given hobby (case-insensitive)
-        $users = User::whereRaw('LOWER(hobbies) LIKE ?', ['%' . $hobby . '%'])->paginate(2);
-    
-        // Iterate over the users and check for matching hobbies
-        $users->getCollection()->transform(function ($user) use ($hobby) {
-            // Decode the hobbies JSON data
-            $hobbies = json_decode($user->hobbies, true); 
-    
-            $userHobby = '';
-    
-            foreach ($hobbies as $h) {
-                if (strtolower($h) === $hobby) {
-                    $userHobby = $h;
-                    break;
-                }
-            }
-
-            // If a hobby is found, fetch the random image based on that hobby
-            if ($userHobby) {
-                $user->randomHobby = $userHobby;
-
-                $user->randomImage = $this->pexelsService->getRandomImage($userHobby);
-            } else {
-                $hobbies = json_decode($user->hobbies, true); // Ambil data hobi
-                $randomHobby = $hobbies[array_rand($hobbies)] ?? 'nature'; // Pilih hobi acak
-    
-                $user->randomHobby = $randomHobby;
-                // Handle the case where no matching hobby is found, e.g., set a default image
-                $user->randomImage = $this->pexelsService->getRandomImage(); // Default image
-            }
-    
-            return $user;
-        });
-    
-        // Return the view with the filtered users
-        return view('filtered-users', [
-            'users' => $users
-        ]);
-    }    
 }

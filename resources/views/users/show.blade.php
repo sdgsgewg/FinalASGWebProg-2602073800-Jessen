@@ -67,7 +67,8 @@
 
                             {{-- Preferred Meeting Location --}}
                             <li class="list-group-item">
-                                <strong>{{ __('user.pref_loc') }}</strong> {{ $user['preferred_location'] }}
+                                <strong>{{ __('user.pref_loc') }}</strong>
+                                {{ __('user.location.' . $user['preferred_location']) }}
                             </li>
                         </ul>
                     </div>
@@ -75,7 +76,15 @@
                     @if (auth()->user()->id !== $user->id)
                         <div
                             class="card-footer d-flex justify-content-center align-items-center text-center gap-3 bg-light">
-                            @include('components.like-button')
+                            @if ($isFollowing)
+                                <a href="{{ route('chats.show', ['chat' => $chat]) }}"
+                                    class="btn btn-primary btn-sm d-inline-flex text-decoration-none">
+                                    <i class="bi bi-chat-dots me-1"></i>
+                                    {{ __('navbar.chats') }}
+                                </a>
+                            @else
+                                @include('components.like-button')
+                            @endif
                         </div>
                     @endif
                 </div>

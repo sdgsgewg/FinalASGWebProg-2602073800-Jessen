@@ -4,10 +4,10 @@
     </a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item {{ request('gender') == 'male' ? 'active' : '' }}"
-                href="{{ route('filter', ['gender' => 'male']) }}">{{ __('auth.male') }}</a>
+                href="{{ route('filter-users', ['gender' => 'male', 'search' => request('search') ?: null]) }}">{{ __('auth.male') }}</a>
         </li>
         <li><a class="dropdown-item {{ request('gender') == 'female' ? 'active' : '' }}"
-                href="{{ route('filter', ['gender' => 'female']) }}">{{ __('auth.female') }}</a>
+                href="{{ route('filter-users', ['gender' => 'female', 'search' => request('search') ?: null]) }}">{{ __('auth.female') }}</a>
         </li>
     </ul>
 </li>

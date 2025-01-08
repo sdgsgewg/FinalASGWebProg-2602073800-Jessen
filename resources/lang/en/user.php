@@ -36,6 +36,11 @@ return [
     'insta_username' => 'Instagram Username:',
     'mobile_number' => 'Mobile Number:',
     'pref_loc' => 'Preferred Meeting Location:',
+    'location' => [
+        'Cafe' => 'Cafe',
+        'Shopping Mall' => 'Shopping Mall',
+        'Park' => 'Park'
+    ],
     'dislike' => 'Dislike',
     'like' => 'Like',
     'friend_list' => 'Friend List',

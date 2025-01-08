@@ -14,30 +14,30 @@ class PaymentController extends Controller
 
     public function submit(Request $request)
     {
-        $user = session('user');
         $registrationPrice = session('registration_price');
-
+    
+        // Validasi dengan aturan dinamis
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
         ]);
-
+    
         $amount = $validated['amount'];
-
+    
         if ($amount < $registrationPrice) {
             $underpaid = $registrationPrice - $amount;
             return back()->withErrors(['amount' => __('payment.underpaid_msg') . ' ' . $underpaid]);
         }
-
+    
         if ($amount > $registrationPrice) {
             $overpaid = $amount - $registrationPrice;
-
+    
             return view('payment.confirmation', [
                 'overpaid' => $overpaid,
             ]);
         }
-
+    
         return redirect('/login')->with('success', __('payment.payment_success_msg'));
-    }
+    }    
 
     public function confirmOverpayment(Request $request)
     {

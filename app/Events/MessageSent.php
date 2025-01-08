@@ -27,4 +27,11 @@ class MessageSent implements ShouldBroadcast
     {
         return new PrivateChannel('chat.' . $this->message->chat_id);
     }
+
+    public function broadcastWith()
+    {
+        return [
+            'message' => $this->message->load('sender')
+        ];
+    }
 }

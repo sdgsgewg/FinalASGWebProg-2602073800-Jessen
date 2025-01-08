@@ -10,7 +10,7 @@
             @csrf
             <div class="mb-3">
                 <label for="amount" class="form-label">{{ __('payment.enter_amount') }}</label>
-                <input type="number" id="amount" name="amount" class="form-control @error('amount') is-invalid @enderror"
+                <input type="number" id="amount" name="amount" value="{{ old('amount') }}" class="form-control @error('amount') is-invalid @enderror"
                     required>
                 @error('amount')
                     <div class="invalid-feedback">{{ $message }}</div>

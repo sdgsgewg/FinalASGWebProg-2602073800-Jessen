@@ -1,14 +1,13 @@
 @extends('layouts.app')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/chat/style.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ secure_asset('css/chat/style.css') }}?v={{ time() }}">
 @endsection
 
 @section('content')
     <div class="row justify-content-center mt-5">
         <div class="col-11 col-lg-8">
             <div class="chat-box">
-                {{-- Chat Header: Recipient Related Information --}}
                 <div class="d-flex flex-row align-items-center mb-3">
                     <div class="col-1">
                         <a href="{{ route('chats.index') }}" class="color-inherit">
@@ -42,13 +41,12 @@
                     @endforelse
                 </div>
 
-                {{-- To store the chat message --}}
                 <form id="chat-form" method="POST" action="{{ route('chats.store') }}" class="chat-form">
                     @csrf
                     <input type="hidden" name="chat" id="chat" value="{{ $chat->id }}">
                     <div class="input-group">
-                        <input type="text" name="message" id="message-input" class="form-control"
-                            placeholder="{{ __('chat.type_msg') }}" required>
+                        <input type="text" name="message" class="form-control" placeholder="{{ __('chat.type_msg') }}"
+                            required>
                         <button type="submit" class="btn btn-primary send-btn">{{ __('chat.send') }}</button>
                     </div>
                 </form>
@@ -58,61 +56,52 @@
 @endsection
 
 @section('scripts')
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-
     <script>
-        // Inisialisasi Pusher
-        Pusher.logToConsole = true;
-
-        var pusher = new Pusher('{{ config('broadcasting.connections.pusher.key') }}', {
-            cluster: '{{ config('broadcasting.connections.pusher.options.cluster') }}',
+        // Inisialisasi Pusher dan Laravel Echo
+        window.Pusher = Pusher;
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: window.PUSHER_APP_KEY,
+            cluster: window.PUSHER_APP_CLUSTER,
+            encrypted: true,
             forceTLS: true
         });
 
+        console.log(window.Pusher);
+        console.log(window.Echo);
 
-        // Berlangganan ke saluran pribadi
-        var channel = pusher.subscribe('chat.{{ $chat->id }}');
+        const chatId = {{ $chat->id }};
+        const userId = {{ auth()->user()->id }};
 
-        // Mendengarkan peristiwa 'MessageSent' dan menambahkan pesan baru
-        channel.bind('App\\Events\\MessageSent', function(data) {
-            var message = data.message;
-            var chatMessages = document.getElementById('chat-messages');
-            var newMessage = document.createElement('div');
-            var isSender = {{ auth()->user()->id }} === message.sender_id;
-            newMessage.classList.add('message', isSender ? 'sent' : 'received', 'pb-2');
-            newMessage.innerHTML = `
-                <div class="message-bubble">
-                    <p class="m-0">${message.message_text}</p>
-                </div>
-                <div class="message-info ${isSender ? 'sent' : 'received'}">
-                    <span class="timestamp">
-                        ${new Date(message.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                </div>
-            `;
-            chatMessages.appendChild(newMessage);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll otomatis ke bawah
-        });
-    </script>
+        window.Echo.private(`chat.${chatId}`)
+            .listen('MessageSent', (e) => {
+                const isSender = userId === e.message.sender_id;
 
-    <script>
-        document.getElementById('chat-form').addEventListener('submit', function(e) {
-            e.preventDefault();
+                const messageDiv = `
+                    <div class="message ${isSender ? 'sent' : 'received'} pb-2">
+                        <div class="message-bubble">
+                            <p class="m-0">${e.message.message_text}</p>
+                        </div>
+                        <div class="message-info ${isSender ? 'sent' : 'received'}">
+                            <span class="timestamp">
+                                ${new Date(e.message.created_at).toLocaleTimeString('id-ID', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </span>
+                        </div>
+                    </div>
+                `;
 
-            var messageInput = document.getElementById('message-input');
-            var message = messageInput.value.trim();
+                document.getElementById('chat-messages').insertAdjacentHTML('beforeend', messageDiv);
 
-            if (message !== '') {
-                axios.post('{{ route('chats.store') }}', {
-                    chat: document.getElementById('chat').value,
-                    message: message,
-                    _token: '{{ csrf_token() }}'
-                }).then(response => {
-                    messageInput.value = ''; // Clear the input field after sending
-                }).catch(error => {
-                    console.error('Error sending message:', error);
-                });
-            }
-        });
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+        window.onload = () => {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
     </script>
 @endsection
