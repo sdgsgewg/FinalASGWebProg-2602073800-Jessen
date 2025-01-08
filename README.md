@@ -1,4 +1,5 @@
 ## ConnectFriend
+ConnectFriend is a social networking site that allows users to communicate with other members, as well as share content and online media with those members.
 
 ## Cara Untuk Menjalankan Program ConnectFriend
 1.  Jalankan program ConnectFriend dengan menggunakan perintah `npm install && npm run dev` dengan menggunakan command prompt.
@@ -7,5 +8,4 @@
 4.  Jalankan perintah `php artisan db:seed` jika ingin menambahkan data bawaan ke dalam website `ConnectFriend`.
 
 ## Cara Menjalankan Fitur Live Chat
-Jalankan perintah di bawah ini:
-`php artisan queue:work`
+Jalankan perintah `php artisan queue:work` di command prompt.
