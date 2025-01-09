@@ -16,9 +16,15 @@ ConnectFriend is a social networking site that allows users to communicate with 
 ## Cara Menjalankan Fitur Live Chat
 1.  Kunjungi `https://pusher.com/` dan buat akun baru di `Pusher` untuk mendapatkan App Keys (app_id, key, secret, dan cluster).
 2.  Kemudian tambahkan informasi tersebut ke dalam file .env dengan konfigurasi di bawah ini:
+   
     BROADCAST_DRIVER=pusher
+    
     PUSHER_APP_ID=your_app_id
+    
     PUSHER_APP_KEY=your_app_key
+    
     PUSHER_APP_SECRET=your_app_secret
+    
     PUSHER_APP_CLUSTER=your_app_cluster
-3.  Jalankan perintah `php artisan queue:work` di command prompt untuk memulai fitur live chat.
+    
+4.  Jalankan perintah `php artisan queue:work` di command prompt untuk memulai fitur live chat.
