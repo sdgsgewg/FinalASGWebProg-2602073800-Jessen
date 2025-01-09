@@ -10,8 +10,10 @@ ConnectFriend is a social networking site that allows users to communicate with 
 ## Cara untuk men-generate random image menggunakan PEXELS API
 1.  Kunjungi `https://www.pexels.com/api/` dan buat akun baru di `Pexels` untuk mendapatkan API Key.
 2.  Kemudian tambahkan informasi tersebut ke dalam file .env dengan konfigurasi di bawah ini:
+   
     PEXELS_API_KEY=your_api_key
-3.  Maka random image akan bisa di-generate setelah konfigurasi di atas telah dilakukan.
+    
+5.  Maka random image akan bisa di-generate setelah konfigurasi di atas telah dilakukan.
 
 ## Cara Menjalankan Fitur Live Chat
 1.  Kunjungi `https://pusher.com/` dan buat akun baru di `Pusher` untuk mendapatkan App Keys (app_id, key, secret, dan cluster).
