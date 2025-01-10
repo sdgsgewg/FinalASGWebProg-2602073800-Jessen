@@ -43,16 +43,10 @@ Route::middleware('guest')->prefix('payments')->as('payments.')->group(function(
 });
 
 // ROUTE FOR USERS
-Route::prefix('users')->as('users.')->group(function() {
-    Route::get('/friend-requests', [UserController::class, 'showFriendRequest'])
-    ->name('friend-req')
-    ->middleware('auth');
-    
-    Route::get('/{user:id}', [UserController::class, 'show'])
-    ->name('show')
-    ->middleware('auth');
+Route::middleware('auth')->prefix('users')->as('users.')->group(function() {
+    Route::get('/friend-requests', [UserController::class, 'showFriendRequest'])->name('friend-req');
 
-    Route::resource('/', UserController::class)->parameters(['' => 'user'])->except('show');
+    Route::resource('/', UserController::class)->parameters(['' => 'user']);
 });
 
 // ROUTE FOR WISHLISTS

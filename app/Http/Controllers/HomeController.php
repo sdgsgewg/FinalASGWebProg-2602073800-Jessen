@@ -73,7 +73,7 @@ class HomeController extends Controller
             // Ambil gambar berdasarkan hobi
             $user->randomImage = $this->pexelsService->getRandomImage($randomHobby);
 
-            if (auth()->check())
+            if (Auth::check())
             {
                 $this->checkWishlist($user);
                 $this->checkFollowing($user);

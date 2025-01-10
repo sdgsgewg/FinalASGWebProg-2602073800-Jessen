@@ -16,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
             // tambahkan middleware lainnya di sini
         ]);
         $middleware->alias([
-            \App\Http\Middleware\AuthenticateBroadcasts::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
