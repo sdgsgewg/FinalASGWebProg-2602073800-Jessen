@@ -92,13 +92,13 @@
                                             {{ __('auth.female') }}
                                         </option>
                                     </select>
-                                </div>
 
-                                @error('gender')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('gender')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
 
                             {{-- Hobbies --}}
@@ -143,13 +143,13 @@
                                         placeholder="{{ __('auth.insta_placeholder') }}"
                                         class="form-control @error('instagram_username') is-invalid @enderror"
                                         value="{{ old('instagram_username') }}" name="instagram_username" required>
-                                </div>
 
-                                @error('instagram_username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('instagram_username')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
 
                             {{-- Mobile Number --}}
@@ -162,13 +162,13 @@
                                         placeholder="{{ __('auth.mobile_placeholder') }}"
                                         class="form-control @error('mobile_number') is-invalid @enderror"
                                         name="mobile_number" value="{{ old('mobile_number') }}" required>
-                                </div>
 
-                                @error('mobile_number')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('mobile_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
 
                             {{-- Preferred Meeting Location --}}

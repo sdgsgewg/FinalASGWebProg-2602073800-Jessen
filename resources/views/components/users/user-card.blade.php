@@ -14,12 +14,14 @@
     onclick="{{ "window.location.href='" . route('users.show', ['user' => $user->id]) . "'" }}">
     <div class="card-body d-flex flex-column h-100">
         <div class="d-flex justify-content-center h-70">
-            @if ($user->randomImage)
+            {{-- @if ($user->randomImage)
                 <img src="{{ $user->randomImage }}" alt="Random Image" style="max-width: 100%; height: auto;">
             @else
                 <img src="{{ asset('img/' . $user['randomHobby'] . '.png') }}" alt="{{ $user['randomHobby'] }}"
                     style="max-width: 100%; height: auto;">
-            @endif
+            @endif --}}
+            <img src="https://picsum.photos/id/{{ $user['id'] }}/100" alt=""
+                style="max-width: 100%; height: auto;">
         </div>
         <div class="d-flex flex-column mt-4 h-20">
             <h5>{{ $user->name }}</h5>

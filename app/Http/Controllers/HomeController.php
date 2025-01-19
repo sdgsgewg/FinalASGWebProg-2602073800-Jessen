@@ -109,7 +109,10 @@ class HomeController extends Controller
         // Filter berdasarkan hobi jika ada
         if ($request->has('search') && !empty($request->search)) {
             $hobby = strtolower($request->search);
-            $query->whereRaw('LOWER(hobbies) LIKE ?', ['%' . $hobby . '%']); // Apply hobby filter
+            $name = strtolower($request->search);
+            $query
+            ->whereRaw('LOWER(hobbies) LIKE ?', ['%' . $hobby . '%']) // Apply hobby filter
+            ->orWhereRaw('LOWER(name) LIKE ?', ['%' . $name . '%']); // Apply name filter
         }
     
         // Ambil hasil query dengan paginasi
